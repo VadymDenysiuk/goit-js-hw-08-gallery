@@ -63,3 +63,52 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+const galleryRef = document.querySelector('.js-gallery')
+const lightboxRef = document.querySelector('.js-lightbox')
+const lightboxImageRef = lightboxRef.querySelector('.lightbox__image')
+const galleryMarkup = createGalleryMarkup(galleryItems)
+galleryRef.insertAdjacentHTML('beforeend', galleryMarkup)
+function createGalleryMarkup(galleryItems) {
+  return galleryItems.map(({ preview, original, description }) => {
+    return `
+    <li class="gallery__item">
+  <a
+    class="gallery__link" onclick="return false"
+    href="${original}"
+  >
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+</a>
+</li>
+`
+  }).join('')
+}
+galleryRef.addEventListener('click', onGalleryRefClick)
+
+function onGalleryRefClick(e) {
+  const imageEl = e.target;
+  const isImageEl = e.target.classList.contains('gallery__image')
+  if (!isImageEl) { return }
+  addOpenClassOnlightbox()
+  lightboxImageRef.src = imageEl.dataset.source;
+}
+
+function addOpenClassOnlightbox() {
+lightboxRef.classList.add('is-open')
+}
+/* function replaceSrcOflightboxImage() {
+   
+} */
+
+const closeModalBtnRef = document.querySelector('.lightbox__button')
+closeModalBtnRef.addEventListener('click', onCloseModalBtn)
+
+function onCloseModalBtn() {
+  lightboxRef.classList.remove('is-open')
+  lightboxImageRef.src = ''
+}
