@@ -69,6 +69,7 @@ const lightboxRef = document.querySelector('.js-lightbox')
 const lightboxImageRef = lightboxRef.querySelector('.lightbox__image')
 const galleryMarkup = createGalleryMarkup(galleryItems)
 galleryRef.insertAdjacentHTML('beforeend', galleryMarkup)
+
 function createGalleryMarkup(galleryItems) {
   return galleryItems.map(({ preview, original, description }) => {
     return `
@@ -101,14 +102,75 @@ function onGalleryRefClick(e) {
 function addOpenClassOnlightbox() {
 lightboxRef.classList.add('is-open')
 }
-/* function replaceSrcOflightboxImage() {
-   
-} */
+
+/* close modal function */
+
+function removeClassFromLightbox() {
+  lightboxRef.classList.remove('is-open')
+  lightboxImageRef.src = ''
+}
+
+/* close modal with click on close modal btn */
 
 const closeModalBtnRef = document.querySelector('.lightbox__button')
 closeModalBtnRef.addEventListener('click', onCloseModalBtn)
 
 function onCloseModalBtn() {
-  lightboxRef.classList.remove('is-open')
-  lightboxImageRef.src = ''
+  removeClassFromLightbox()
+}
+
+
+/* close modal with click on lightbox overlay */
+
+const lightboxOverlay = document.querySelector('.lightbox__overlay')
+lightboxOverlay.addEventListener('click', onLightboxOverlay)
+
+function onLightboxOverlay() {
+  removeClassFromLightbox()
+}
+
+/* close modal and switch images with press on btns */
+
+document.addEventListener('keydown', onBtnsPress)
+
+const srcArray = []
+galleryItems.forEach(item => srcArray.push(item.original))
+
+function onBtnsPress(e) {
+  const currentIndex = srcArray.indexOf(lightboxImageRef.src)
+  if (e.key === 'Escape') {
+    removeClassFromLightbox()
+  } else if (e.key === 'ArrowLeft') {
+    leftClick(currentIndex)
+  }
+  else if (e.key === 'ArrowRight') {
+    rightClick(currentIndex)
+  }
+}
+
+function leftClick(currentIndex) {
+  let nextIndex = currentIndex - 1;
+  if (nextIndex === -1) {
+    nextIndex = srcArray.length - 1;
+  }
+  lightboxImageRef.src = srcArray[nextIndex]
+}
+function rightClick(currentIndex) {
+  let nextIndex = currentIndex + 1;
+  if (nextIndex === srcArray.length) {
+    nextIndex = 0;
+  }
+  lightboxImageRef.src = srcArray[nextIndex]
+}
+
+/* switch images with click on image */
+lightboxImageRef.addEventListener('click', onlightboxImageRef) 
+
+function onlightboxImageRef() {
+  const currentIndex = srcArray.indexOf(lightboxImageRef.src)
+   let nextIndex = currentIndex + 1;
+  if (nextIndex === srcArray.length) {
+    nextIndex = 0;
+  }
+  lightboxImageRef.src = srcArray[nextIndex]
 }
